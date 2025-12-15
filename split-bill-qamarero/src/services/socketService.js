@@ -13,45 +13,39 @@ const processQuantityChange = (itemId, userId, delta) => {
   if (!itemConfig) return;
 
   const currentItemState = globalSelections[itemId] || {};
-  const myCurrentQty = currentItemState[userId] || 0;
+  const myCurrentQty = currentItemState[userId] || 0; // Calcular cuántos han cogido los DEMÁS
 
-  // Calcular cuántos han cogido los DEMÁS
   const othersQty = Object.entries(currentItemState)
     .filter(([uid]) => uid !== userId)
-    .reduce((acc, [, qty]) => acc + qty, 0);
+    .reduce((acc, [, qty]) => acc + qty, 0); // Cantidad total ya ocupada por otros
 
-  // Cantidad total ya ocupada por otros
-  const totalTakenByOthers = othersQty;
+  const totalTakenByOthers = othersQty; // Calcular mi nueva cantidad deseada
 
-  // Calcular mi nueva cantidad deseada
-  const newQty = myCurrentQty + delta;
+  const newQty = myCurrentQty + delta; // VALIDACIONES: // 1. No puedo tener menos de 0
 
-  // VALIDACIONES:
-  // 1. No puedo tener menos de 0
-  if (newQty < 0) return;
+  if (newQty < 0) return; // 2. La suma total (otros + yo) NO puede superar la cantidad del pedido (Stock)
 
-  // 2. Si es un item compartido único (ej. Pizza), solo permitimos 0 o 1 (participar o no)
-  if (itemConfig.qty === 1) {
-    if (newQty > 1) return; // No puedes tener "2" de una pizza única, solo participas
-  }
+  if (totalTakenByOthers + newQty > itemConfig.qty) {
+    // Si la cantidad actual + lo que quiero añadir supera el stock total, lo ignoramos.
+    return;
+  } // ACTUALIZAR ESTADO
 
-  // 3. La suma total (otros + yo) no puede superar la cantidad del pedido
-  // Nota: Si es item compartido único (qty=1), la lógica de "stock" se ignora porque se divide el precio
-  if (itemConfig.qty > 1) {
-    if (totalTakenByOthers + newQty > itemConfig.qty) return; // No hay stock suficiente
-  }
-
-  // ACTUALIZAR ESTADO
   if (newQty === 0) {
     // Si llego a 0, borro mi entrada
     if (globalSelections[itemId]) {
-      delete globalSelections[itemId][userId];
+      // 1. Elimina la cantidad de ese usuario del ítem
+      delete globalSelections[itemId][userId]; // 2. Si nadie tiene nada del ítem, elimina el ítem completo
+
       if (Object.keys(globalSelections[itemId]).length === 0) {
         delete globalSelections[itemId];
       }
+
+      // ¡¡¡CORRECCIÓN CLAVE AQUÍ!!!
+      // Ya que usamos 'delete' (mutación), forzamos una nueva referencia para React:
+      globalSelections = { ...globalSelections };
     }
   } else {
-    // Actualizo o creo la entrada
+    // Actualizo o creo la entrada (Esto ya es inmutable)
     globalSelections = {
       ...globalSelections,
       [itemId]: { ...currentItemState, [userId]: newQty },
@@ -73,7 +67,6 @@ export const SocketService = {
     }, 500);
   },
 
-  // CAMBIO IMPORTANTE: Ahora recibimos delta (+1 o -1)
   updateQuantity: (itemId, userId, delta) => {
     processQuantityChange(itemId, userId, delta);
   },

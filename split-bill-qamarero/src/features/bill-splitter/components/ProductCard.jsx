@@ -8,17 +8,22 @@ export function ProductCard({
   currentUserId,
 }) {
   const { name, unitPrice, qty } = item;
-  const { myQty, totalTaken, isFull, isShared, participants } = status;
+  // Eliminamos isShared de la desestructuración
+  const { myQty, totalTaken, isFull, participants } = status;
 
   // Detectar si es múltiple (Cervezas) o único (Pizza)
   const isMultiUnit = qty > 1;
 
+  // Manejador del clic en TODA la tarjeta
   const handleCardClick = () => {
-    // Si no tengo nada, al hacer click sumo 1 (si hay stock)
-    if (myQty === 0 && !isFull) {
+    const remainingStock = qty - totalTaken;
+
+    // 1. Si no tengo nada, intento añadir 1 (si hay stock disponible)
+    if (myQty === 0 && remainingStock > 0) {
       onUpdateQty(1);
     }
-    // Si es item único y ya lo tengo, al hacer click en la tarjeta lo quito (efecto toggle)
+    // 2. Si es Ítem Único (qty=1) Y ya lo tengo, el click en la tarjeta lo quita (Toggle)
+    // Nota: El item único es el único donde la tarjeta funciona como toggle
     else if (!isMultiUnit && myQty > 0) {
       onUpdateQty(-1);
     }
@@ -32,57 +37,37 @@ export function ProductCard({
     return { ...user, uid };
   });
 
-  // Determinar el contenido a mostrar en el control
-  const renderControl = () => {
-    // --- ESCENARIO A: YA LO TENGO SELECCIONADO ---
-    if (myQty > 0) {
-      if (isMultiUnit) {
-        // Opción 1: Es Multi-Unidad (Stepper)
-        return (
-          <div className={styles.stepper} onClick={(e) => e.stopPropagation()}>
-            <button
-              className={styles.stepperBtn}
-              onClick={() => onUpdateQty(-1)}
-            >
-              −
-            </button>
-            <span className={styles.qtyValue}>{myQty}</span>
-            <button
-              className={`${styles.stepperBtn} ${styles.addBtn}`}
-              disabled={qty - totalTaken <= 0}
-              onClick={() => onUpdateQty(1)}
-            >
-              +
-            </button>
-          </div>
-        );
-      } else {
-        // Opción 2: Es Unidad Única (Botón de Liberar)
-        return (
-          <button
-            className={styles.singleSelectedBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              onUpdateQty(-1);
-            }}
-          >
-            <span className={styles.checkIcon}>✓</span>
-            {isShared ? "Liberar Parte" : "Liberar"}
-          </button>
-        );
-      }
-    }
-
-    // --- ESCENARIO B: NO LO TENGO SELECCIONADO ---
-    else {
-      // Mostrar stock si es multi-unidad o está agotado
-      const stockText = isMultiUnit ? `Quedan ${qty - totalTaken}` : "";
-
+  // --- RENDERING DE CONTROLES ---
+  const renderControls = () => {
+    // Si tengo cantidad > 0 Y es un ítem multi-unidad, muestro el Stepper
+    if (myQty > 0 && isMultiUnit) {
       return (
-        <div className={styles.stockLabel}>
-          {isFull ? "Agotado" : stockText}
+        <div className={styles.stepper} onClick={(e) => e.stopPropagation()}>
+          <button className={styles.stepperBtn} onClick={() => onUpdateQty(-1)}>
+            −
+          </button>
+          <span className={styles.qtyValue}>{myQty}</span>
+          <button
+            className={`${styles.stepperBtn} ${styles.addBtn}`}
+            disabled={qty - totalTaken <= 0}
+            onClick={() => onUpdateQty(1)}
+          >
+            +
+          </button>
         </div>
       );
+    }
+
+    // Si no es un stepper, mostramos stock o nada
+    else {
+      // Si es multi-unidad y no tengo (pero hay stock), se muestra el stock restante
+      if (isMultiUnit) {
+        return (
+          <div className={styles.stockLabel}>
+            {isFull ? "" : `Quedan ${qty - totalTaken}`}
+          </div>
+        );
+      }
     }
   };
 
@@ -96,13 +81,13 @@ export function ProductCard({
       <div className={styles.info}>
         <div className={styles.name}>{name}</div>
         <div className={styles.price}>
-          {isShared && <span className={styles.splitLabel}>Compartido</span>}
+          {/* Eliminamos el span.splitLabel que decía 'Compartido' */}
           {unitPrice.toFixed(2)} €
         </div>
       </div>
 
       <div className={styles.actions}>
-        {renderControl()}
+        {renderControls()}
 
         {/* AVATARES */}
         <div className={styles.avatarsRow}>
