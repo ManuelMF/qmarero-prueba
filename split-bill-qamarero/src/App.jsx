@@ -54,6 +54,7 @@ function App() {
       <OrderSummary
         totalToPay={totalToPay}
         onConfirmPayment={handleConfirmPayment}
+        items={items}
       />
     </main>
   );
