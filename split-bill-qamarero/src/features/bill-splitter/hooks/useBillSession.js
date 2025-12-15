@@ -8,7 +8,7 @@ export function useBillSession(sessionId, tableId) {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    if (!sessionId || !tableId) return; // seguridad
+    if (!sessionId || !tableId) return;
 
     const handleUpdate = (data) => {
       setSelections(data.selections);
@@ -18,11 +18,8 @@ export function useBillSession(sessionId, tableId) {
 
     SocketService.connect(sessionId, tableId, handleUpdate);
 
-    // cleanup opcional
-    return () => {
-      // SocketService.disconnect(sessionId, tableId)
-      // puedes implementar si quieres limpiar al salir
-    };
+    // cleanup
+    return () => {};
   }, [sessionId, tableId]);
 
   const updateItemQty = (itemId, delta) => {

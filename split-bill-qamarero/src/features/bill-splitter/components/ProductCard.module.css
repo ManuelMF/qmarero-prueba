@@ -1,6 +1,3 @@
-/* src/features/bill-splitter/components/ProductCard.module.css */
-
-/* --- GENERAL --- */
 .card {
   display: flex;
   justify-content: space-between;
@@ -14,19 +11,16 @@
   cursor: pointer;
 }
 
-/* Efecto hover */
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
 
-/* ESTADO ACTIVO: Yo he seleccionado */
 .active {
   border-color: var(--color-primary);
   background-color: var(--color-primary-light); 
 }
 
-/* ESTADO DESHABILITADO: Agotado */
 .disabled {
   opacity: 0.5;
   filter: grayscale(80%);
@@ -34,7 +28,6 @@
 }
 
 
-/* --- SECCIÓN IZQUIERDA (INFO) --- */
 .info {
   display: flex;
   flex-direction: column;
@@ -65,7 +58,6 @@
 }
 
 
-/* --- SECCIÓN DERECHA (CONTROLES Y AVATARES) --- */
 .actions {
   display: flex;
   flex-direction: column;
@@ -74,18 +66,16 @@
   min-width: 100px;
 }
 
-/* STOCK RESTANTE (Cuando no tengo seleccionado) */
 .stockLabel {
   font-size: 0.7rem;
   color: #999;
   font-weight: 500;
-  height: 28px; /* Para alinearlo con el stepper */
+  height: 28px;
   display: flex;
   align-items: center;
 }
 
 
-/* --- STEPPER (Para ítems > 1 unidad) --- */
 .stepper {
   display: flex;
   align-items: center;
@@ -138,7 +128,6 @@
 }
 
 
-/* --- BOTÓN ÚNICO (Para ítems = 1 unidad) --- */
 .singleSelectedBtn {
   background: var(--color-primary);
   color: white;
@@ -168,7 +157,6 @@
 }
 
 
-/* --- AVATARES APILADOS --- */
 .avatarsRow {
   display: flex;
   align-items: center;
@@ -186,7 +174,7 @@
   font-size: 10px;
   color: white;
   font-weight: bold;
-  margin-left: -8px; /* Efecto de superposición */
+  margin-left: -8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 

@@ -8,23 +8,16 @@ export function ProductCard({
   currentUserId,
 }) {
   const { name, unitPrice, qty } = item;
-  // Eliminamos isShared de la desestructuración
   const { myQty, totalTaken, isFull, participants } = status;
 
-  // Detectar si es múltiple (Cervezas) o único (Pizza)
   const isMultiUnit = qty > 1;
 
-  // Manejador del clic en TODA la tarjeta
   const handleCardClick = () => {
     const remainingStock = qty - totalTaken;
 
-    // 1. Si no tengo nada, intento añadir 1 (si hay stock disponible)
     if (myQty === 0 && remainingStock > 0) {
       onUpdateQty(1);
-    }
-    // 2. Si es Ítem Único (qty=1) Y ya lo tengo, el click en la tarjeta lo quita (Toggle)
-    // Nota: El item único es el único donde la tarjeta funciona como toggle
-    else if (!isMultiUnit && myQty > 0) {
+    } else if (!isMultiUnit && myQty > 0) {
       onUpdateQty(-1);
     }
   };
@@ -37,9 +30,7 @@ export function ProductCard({
     return { ...user, uid };
   });
 
-  // --- RENDERING DE CONTROLES ---
   const renderControls = () => {
-    // Si tengo cantidad > 0 Y es un ítem multi-unidad, muestro el Stepper
     if (myQty > 0 && isMultiUnit) {
       return (
         <div className={styles.stepper} onClick={(e) => e.stopPropagation()}>
@@ -56,11 +47,7 @@ export function ProductCard({
           </button>
         </div>
       );
-    }
-
-    // Si no es un stepper, mostramos stock o nada
-    else {
-      // Si es multi-unidad y no tengo (pero hay stock), se muestra el stock restante
+    } else {
       if (isMultiUnit) {
         return (
           <div className={styles.stockLabel}>
@@ -80,16 +67,12 @@ export function ProductCard({
     >
       <div className={styles.info}>
         <div className={styles.name}>{name}</div>
-        <div className={styles.price}>
-          {/* Eliminamos el span.splitLabel que decía 'Compartido' */}
-          {unitPrice.toFixed(2)} €
-        </div>
+        <div className={styles.price}>{unitPrice.toFixed(2)} €</div>
       </div>
 
       <div className={styles.actions}>
         {renderControls()}
 
-        {/* AVATARES */}
         <div className={styles.avatarsRow}>
           {activeAvatars.map((u, index) => (
             <div

@@ -1,6 +1,6 @@
 /**
  * Calcula el total que debe pagar un usuario específico.
- * Regla: El usuario paga el precio unitario por cada unidad que reclama (myQty).
+ * Regla: El usuario paga el precio unitario por cada unidad que reclama.
  */
 export const calculateUserTotal = (items, selections, userId) => {
   return items.reduce((total, item) => {
@@ -9,7 +9,6 @@ export const calculateUserTotal = (items, selections, userId) => {
 
     if (myQty === 0) return total;
 
-    // Lógica simplificada: Siempre paga por las unidades que ha reclamado
     return total + myQty * item.unitPrice;
   }, 0);
 };

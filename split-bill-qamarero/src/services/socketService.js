@@ -1,4 +1,3 @@
-// socketService.js
 let ws = null;
 let updateCallback = () => {};
 

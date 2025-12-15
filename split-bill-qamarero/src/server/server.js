@@ -6,8 +6,8 @@ const wss = new WebSocketServer({ port: 3001 });
 
 let tables = {
   "MESA-18": {
-    selections: {}, // { itemId: { sessionId: qty } }
-    users: {}, // { sessionId: { name, color } }
+    selections: {},
+    users: {},
   },
 };
 

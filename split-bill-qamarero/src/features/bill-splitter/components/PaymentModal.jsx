@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./PaymentModal.module.css";
 
 export function PaymentModal({ isOpen, onClose, onSelectItems, onPayAll }) {
@@ -14,12 +13,10 @@ export function PaymentModal({ isOpen, onClose, onSelectItems, onPayAll }) {
         </p>
 
         <div className={styles.options}>
-          {/* MODO 1: Seleccionar productos */}
           <button className={styles.primaryButton} onClick={onSelectItems}>
             Seleccionar productos a pagar
           </button>
 
-          {/* MODO 2: Pagar todo */}
           <button className={styles.secondaryButton} onClick={onPayAll}>
             Hacerme cargo de toda la cuenta
           </button>

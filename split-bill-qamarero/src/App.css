@@ -1,34 +1,29 @@
-/* src/App.css */
-
-/* Variables de Color (Raíz del CSS) */
 :root {
-    --color-primary: #7048E8;        /* Morado Principal */
-    --color-primary-light: #F8F5FF;  /* Morado de fondo activo */
-    --color-text-dark: #222;         /* Texto principal */
-    --color-text-medium: #666;       /* Subtítulos */
+    --color-primary: #7048E8;        
+    --color-primary-light: #F8F5FF;  
+    --color-text-dark: #222;         
+    --color-text-medium: #666;       
     --color-border: #eee;
-    --color-success: #4ECDC4;        /* Verde para compartir/éxito */
-    --color-error: #FF6B6B;          /* Rojo para agotado */
+    --color-success: #4ECDC4;        
+    --color-error: #FF6B6B;          
     --font-family: system-ui, sans-serif;
 }
 
 body {
     margin: 0;
-    background: #f8f9fa; /* Fondo suave */
+    background: #f8f9fa; 
     font-family: var(--font-family);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* LAYOUT PRINCIPAL */
 .layout {
     max-width: 600px;
     margin: 0 auto;
     min-height: 100vh;
-    padding-bottom: 120px; /* Espacio para el footer fijo */
+    padding-bottom: 120px;
 }
 
-/* HEADER */
 .header {
     background: white;
     padding: 20px;
@@ -51,15 +46,13 @@ body {
     font-size: 0.9rem;
 }
 
-/* LISTA DE PRODUCTOS */
 .list-container {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Separación entre tarjetas */
+    gap: 8px; 
 }
 
-/* ESTADO DE CARGA */
 .loading { 
     display: flex; 
     justify-content: center; 

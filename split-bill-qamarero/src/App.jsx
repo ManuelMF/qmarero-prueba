@@ -1,14 +1,26 @@
-// src/App.jsx
-
+import { useEffect, useState, useMemo } from "react";
 import { useBillSession } from "./features/bill-splitter/hooks/useBillSession";
 import { ProductCard } from "./features/bill-splitter/components/ProductCard";
-import { OrderSummary } from "./features/bill-splitter/components/OrderSummary"; // <-- Nuevo
+import { OrderSummary } from "./features/bill-splitter/components/OrderSummary";
 import { getItemStatus } from "./features/bill-splitter/utils/calculations";
-import { useState } from "react";
+import { ORDER_DATA } from "./mocks/orderData.js";
 import "./App.css";
-import { ORDER_DATA } from "./mocks/orderData";
+
 function App() {
-  const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
+  const [sessionId, setSessionId] = useState(() => {
+    return localStorage.getItem("sessionId") || null;
+  });
+
+  useEffect(() => {
+    if (!sessionId) {
+      const newId = crypto.randomUUID();
+      setSessionId(newId);
+      localStorage.setItem("sessionId", newId);
+    }
+  }, [sessionId]);
+
+  if (!sessionId) return <div className="loading">Generando sesión...</div>;
+
   const tableId = ORDER_DATA.table.id;
 
   const {
@@ -18,7 +30,6 @@ function App() {
     otherUsers,
     isConnected,
     totalToPay,
-    toggleItem,
     updateItemQty,
   } = useBillSession(sessionId, tableId);
 
@@ -32,7 +43,7 @@ function App() {
     <main className="layout">
       <header className="header">
         <h1>{tableInfo.name}</h1>
-        <p>Hola, Usuario {sessionId.slice(0, 4)}</p>
+        <p>Selecciona los productos a pagar</p>
       </header>
 
       <section className="list-container">
@@ -43,7 +54,6 @@ function App() {
             currentUserId={sessionId}
             status={getItemStatus(item, selections, sessionId)}
             usersLookup={otherUsers}
-            onToggle={() => toggleItem(item.id)}
             onUpdateQty={(delta) => updateItemQty(item.id, delta)}
           />
         ))}
@@ -57,4 +67,5 @@ function App() {
     </main>
   );
 }
+
 export default App;

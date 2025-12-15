@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import styles from "./OrderSummary.module.css";
-import { PaymentModal } from "./PaymentModal"; // Importar el nuevo modal
-import { ConfirmPaymentModal } from "./ConfirmPaymentModal"; // Importar el nuevo modal
+import { PaymentModal } from "./PaymentModal";
+import { ConfirmPaymentModal } from "./ConfirmPaymentModal";
 
 export function OrderSummary({ totalToPay, items }) {
-  const [mode, setMode] = useState(null); // null | select | all
+  const [mode, setMode] = useState(null);
   const [isModeModalOpen, setIsModeModalOpen] = useState(true);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
