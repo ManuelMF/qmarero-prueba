@@ -4,11 +4,12 @@ import { useBillSession } from "./features/bill-splitter/hooks/useBillSession";
 import { ProductCard } from "./features/bill-splitter/components/ProductCard";
 import { OrderSummary } from "./features/bill-splitter/components/OrderSummary"; // <-- Nuevo
 import { getItemStatus } from "./features/bill-splitter/utils/calculations";
+import { useState } from "react";
 import "./App.css";
-
+import { ORDER_DATA } from "./mocks/orderData";
 function App() {
-  const params = new URLSearchParams(window.location.search);
-  const userId = params.get("user") || "invitado";
+  const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
+  const tableId = ORDER_DATA.table.id;
 
   const {
     items,
@@ -19,12 +20,10 @@ function App() {
     totalToPay,
     toggleItem,
     updateItemQty,
-  } = useBillSession(userId);
+  } = useBillSession(sessionId, tableId);
 
-  // Función de acción simulada
   const handleConfirmPayment = () => {
-    alert(`👋 ¡${userId} ha confirmado el pago de ${totalToPay.toFixed(2)} €!`);
-    // Aquí iría la llamada al Socket para notificar al servidor y a otros usuarios
+    alert(`¡Se ha confirmado el pago de ${totalToPay.toFixed(2)} €!`);
   };
 
   if (!isConnected) return <div className="loading">Conectando...</div>;
@@ -33,7 +32,7 @@ function App() {
     <main className="layout">
       <header className="header">
         <h1>{tableInfo.name}</h1>
-        <p>Hola, {userId}</p>
+        <p>Hola, Usuario {sessionId.slice(0, 4)}</p>
       </header>
 
       <section className="list-container">
@@ -41,8 +40,8 @@ function App() {
           <ProductCard
             key={item.id}
             item={item}
-            currentUserId={userId}
-            status={getItemStatus(item, selections, userId)}
+            currentUserId={sessionId}
+            status={getItemStatus(item, selections, sessionId)}
             usersLookup={otherUsers}
             onToggle={() => toggleItem(item.id)}
             onUpdateQty={(delta) => updateItemQty(item.id, delta)}
@@ -50,14 +49,12 @@ function App() {
         ))}
       </section>
 
-      {/* Nuevo Componente OrderSummary */}
       <OrderSummary
         totalToPay={totalToPay}
-        onConfirmPayment={handleConfirmPayment}
         items={items}
+        onConfirmPayment={handleConfirmPayment}
       />
     </main>
   );
 }
-
 export default App;

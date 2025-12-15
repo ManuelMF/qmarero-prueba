@@ -1,30 +1,37 @@
 import { useState, useEffect, useMemo } from "react";
 import { ORDER_DATA } from "../../../mocks/orderData";
-import { calculateUserTotal } from "../utils/calculations";
+import { calculateUserTotal, getItemStatus } from "../utils/calculations";
 import { SocketService } from "../../../services/socketService";
-
-export function useBillSession(userId) {
+export function useBillSession(sessionId, tableId) {
   const [selections, setSelections] = useState({});
-  const [isConnected, setIsConnected] = useState(false);
   const [otherUsers, setOtherUsers] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    if (!sessionId || !tableId) return; // seguridad
+
     const handleUpdate = (data) => {
       setSelections(data.selections);
       setOtherUsers(data.users);
       setIsConnected(data.connected);
     };
-    SocketService.connect(handleUpdate);
-  }, [userId]);
 
-  // CAMBIO: Función para añadir o quitar
+    SocketService.connect(sessionId, tableId, handleUpdate);
+
+    // cleanup opcional
+    return () => {
+      // SocketService.disconnect(sessionId, tableId)
+      // puedes implementar si quieres limpiar al salir
+    };
+  }, [sessionId, tableId]);
+
   const updateItemQty = (itemId, delta) => {
-    SocketService.updateQuantity(itemId, userId, delta);
+    SocketService.updateQuantity(itemId, sessionId, delta);
   };
 
   const totalToPay = useMemo(
-    () => calculateUserTotal(ORDER_DATA.items, selections, userId),
-    [selections, userId]
+    () => calculateUserTotal(ORDER_DATA.items, selections, sessionId),
+    [selections, sessionId]
   );
 
   return {
@@ -34,6 +41,6 @@ export function useBillSession(userId) {
     otherUsers,
     isConnected,
     totalToPay,
-    updateItemQty, // Exponemos la nueva función
+    updateItemQty,
   };
 }

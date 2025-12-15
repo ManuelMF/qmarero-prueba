@@ -82,8 +82,3 @@ export const ORDER_DATA = {
     },
   ],
 };
-
-export const MOCK_USERS = [
-  { id: "u2", name: "Ana", color: "#FF6B6B" },
-  { id: "u3", name: "Luis", color: "#4ECDC4" },
-];
