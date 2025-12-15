@@ -1,0 +1,70 @@
+/* src/App.css */
+
+/* Variables de Color (Raíz del CSS) */
+:root {
+    --color-primary: #7048E8;        /* Morado Principal */
+    --color-primary-light: #F8F5FF;  /* Morado de fondo activo */
+    --color-text-dark: #222;         /* Texto principal */
+    --color-text-medium: #666;       /* Subtítulos */
+    --color-border: #eee;
+    --color-success: #4ECDC4;        /* Verde para compartir/éxito */
+    --color-error: #FF6B6B;          /* Rojo para agotado */
+    --font-family: system-ui, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f8f9fa; /* Fondo suave */
+    font-family: var(--font-family);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* LAYOUT PRINCIPAL */
+.layout {
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding-bottom: 120px; /* Espacio para el footer fijo */
+}
+
+/* HEADER */
+.header {
+    background: white;
+    padding: 20px;
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--color-text-dark);
+}
+
+.header p {
+    margin: 5px 0 0;
+    color: var(--color-text-medium);
+    font-size: 0.9rem;
+}
+
+/* LISTA DE PRODUCTOS */
+.list-container {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Separación entre tarjetas */
+}
+
+/* ESTADO DE CARGA */
+.loading { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    color: var(--color-text-medium); 
+    font-size: 1.1rem;
+}
