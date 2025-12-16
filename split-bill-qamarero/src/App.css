@@ -11,18 +11,24 @@
 
 body {
     margin: 0;
-    background: #f8f9fa; 
+    background: #f8f9fa;
     font-family: var(--font-family);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    display: flex;
+    justify-content: center; 
 }
 
+
 .layout {
-    max-width: 600px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 420px;        
     min-height: 100vh;
     padding-bottom: 120px;
+    background: var(--color-primary-light);
 }
+
 
 .header {
     background: white;
@@ -32,7 +38,9 @@ body {
     top: 0;
     z-index: 10;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
 }
+
 
 .header h1 {
     margin: 0;
@@ -50,14 +58,15 @@ body {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 8px; 
+    gap: 12px;
 }
 
-.loading { 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    height: 100vh; 
-    color: var(--color-text-medium); 
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: var(--color-text-medium);
     font-size: 1.1rem;
 }
