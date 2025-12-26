@@ -32,7 +32,7 @@
 
 .payButton {
     width: 100%;
-    background: var(--color-text-dark);
+    background: var(--color-primary);
     color: white;
     padding: 16px;
     border-radius: 12px;
@@ -44,5 +44,5 @@
 }
 
 .payButton:hover {
-    background: #444;
+    background: #5f3dc4;;
 }

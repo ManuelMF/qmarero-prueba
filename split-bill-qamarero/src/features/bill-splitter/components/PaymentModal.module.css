@@ -36,7 +36,7 @@
 }
 
 .closeButton:hover {
-  color: #111827;
+  color: #7048E8; 
 }
 .title {
   font-size: 1.4rem;
@@ -56,21 +56,46 @@
 }
 
 .primaryButton {
-  background: #111827;
+  background: #7048E8;
   color: white;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 14px;
+  border-radius: 12px;
   border: none;
   font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(112, 72, 232, 0.2);
+}
+
+.primaryButton:hover {
+  background: #5f3dc4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(112, 72, 232, 0.3);
+}
+
+.primaryButton:active {
+  transform: translateY(0);
 }
 
 .secondaryButton {
-  background: #e5e7eb;
-  color: #111827;
+  background: #f3f4f6; 
+  color: #7048E8;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
   font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.secondaryButton:hover {
+  background: #e5e7eb;
+  color: #5f3dc4;
+  transform: translateY(-1px);
 }
 
 .laterButton {
@@ -78,7 +103,20 @@
   border: none;
   color: #6b7280;
   font-size: 0.9rem;
-  margin-top: 8px;
+  font-weight: 500;
+  margin-top: 12px;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+  width: auto;
+  align-self: center;
+}
+
+.laterButton:hover {
+  color: #374151;
+  text-decoration: underline;
+  background: rgba(0, 0, 0, 0.03); 
+  border-radius: 8px;
 }
 
 @keyframes fadeIn {
@@ -90,4 +128,24 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.amountDisplay {
+  margin: 32px 0; 
+  padding: 16px;
+  background: #f8f7ff; 
+  border-radius: 12px;
+}
+
+.amountValue {
+  font-size: 2.2rem;
+  color: #111827;
+  display: block;
+  letter-spacing: -0.02em;
+}
+
+.description {
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 8px;
 }

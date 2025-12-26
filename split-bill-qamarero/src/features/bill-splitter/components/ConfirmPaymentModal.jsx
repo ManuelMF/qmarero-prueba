@@ -46,6 +46,19 @@ export function ConfirmPaymentModal({
         <p className={styles.description}>{description}</p>
 
         <div className={styles.amountDisplay}>
+          <span
+            style={{
+              fontSize: "0.75rem",
+              color: "#6b7280",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              display: "block",
+              marginBottom: "4px",
+              fontWeight: "600",
+            }}
+          >
+            Total a pagar
+          </span>
           <strong className={styles.amountValue}>{amount.toFixed(2)} €</strong>
         </div>
 
