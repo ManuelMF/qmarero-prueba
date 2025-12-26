@@ -1,6 +1,6 @@
 /**
  * Calcula el total que debe pagar un usuario específico.
- * Regla: El usuario paga el precio unitario por cada unidad que reclama.
+ * El usuario paga el precio unitario por cada unidad.
  */
 export const calculateUserTotal = (items, selections, userId) => {
   return items.reduce((total, item) => {
@@ -13,15 +13,25 @@ export const calculateUserTotal = (items, selections, userId) => {
   }, 0);
 };
 
-export const getItemStatus = (item, selections, userId) => {
+/**
+ * Determina el estado de un producto incluyendo lo que ya se ha pagado.
+ * @param {Object} item - Datos del producto del mock.
+ * @param {Object} selections - Estado de selecciones en tiempo real (Socket).
+ * @param {Object} paidItems - Estado de productos ya pagados (Socket).
+ * @param {string} userId - ID del usuario actual.
+ */
+export const getItemStatus = (item, selections, paidItems = {}, userId) => {
   const itemState = selections[item.id] || {};
-  const totalTaken = Object.values(itemState).reduce((a, b) => a + b, 0);
+  const paidQty = paidItems[item.id] || 0;
+
+  const totalSelected = Object.values(itemState).reduce((a, b) => a + b, 0);
+  const totalOccupied = totalSelected + paidQty;
 
   return {
     myQty: itemState[userId] || 0,
-    totalTaken,
-    isFull: totalTaken >= item.qty,
-    // Eliminamos 'isShared' y cualquier referencia a lógica de compartir
+    paidQty,
+    totalTaken: totalSelected,
+    isFull: totalOccupied >= item.qty,
     participants: Object.keys(itemState),
   };
 };

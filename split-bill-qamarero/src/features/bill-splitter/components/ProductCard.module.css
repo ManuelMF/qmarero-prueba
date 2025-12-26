@@ -184,3 +184,27 @@
 .avatarBubble:first-child {
   margin-left: 0;
 }
+
+.cardPaid {
+  background-color: #f0fff4 !important; 
+  border-color: #c6f6d5 !important;
+  opacity: 0.8;
+  cursor: default;
+}
+
+.paidBadge {
+  background: #10b981;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cardPaid .name {
+  color: #065f46; 
+  text-decoration: line-through;
+}

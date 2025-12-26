@@ -8,12 +8,15 @@ export function ProductCard({
   currentUserId,
 }) {
   const { name, unitPrice, qty } = item;
-  const { myQty, totalTaken, isFull, participants } = status;
+  const { myQty, totalTaken, isFull, participants, paidQty } = status;
 
   const isMultiUnit = qty > 1;
+  const isFullyPaid = paidQty >= qty;
 
   const handleCardClick = () => {
-    const remainingStock = qty - totalTaken;
+    if (isFullyPaid) return;
+
+    const remainingStock = qty - (totalTaken + paidQty);
 
     if (myQty === 0 && remainingStock > 0) {
       onUpdateQty(1);
@@ -31,6 +34,14 @@ export function ProductCard({
   });
 
   const renderControls = () => {
+    if (isFullyPaid) {
+      return (
+        <div className={styles.paidBadge}>
+          <span className={styles.checkIcon}>✓</span> Pagado
+        </div>
+      );
+    }
+
     if (myQty > 0 && isMultiUnit) {
       return (
         <div className={styles.stepper} onClick={(e) => e.stopPropagation()}>
@@ -40,7 +51,7 @@ export function ProductCard({
           <span className={styles.qtyValue}>{myQty}</span>
           <button
             className={`${styles.stepperBtn} ${styles.addBtn}`}
-            disabled={qty - totalTaken <= 0}
+            disabled={qty - (totalTaken + paidQty) <= 0}
             onClick={() => onUpdateQty(1)}
           >
             +
@@ -51,7 +62,7 @@ export function ProductCard({
       if (isMultiUnit) {
         return (
           <div className={styles.stockLabel}>
-            {isFull ? "" : `Quedan ${qty - totalTaken}`}
+            {isFull ? "Completo" : `Quedan ${qty - (totalTaken + paidQty)}`}
           </div>
         );
       }
@@ -60,9 +71,12 @@ export function ProductCard({
 
   return (
     <div
-      className={`${styles.card} ${myQty > 0 ? styles.active : ""} ${
-        isFull && myQty === 0 ? styles.disabled : ""
-      }`}
+      className={`
+        ${styles.card} 
+        ${myQty > 0 ? styles.active : ""} 
+        ${(isFull && myQty === 0) || isFullyPaid ? styles.disabled : ""}
+        ${isFullyPaid ? styles.cardPaid : ""}
+      `}
       onClick={handleCardClick}
     >
       <div className={styles.info}>

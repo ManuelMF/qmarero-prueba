@@ -1,4 +1,3 @@
-// server.js
 import { WebSocketServer } from "ws";
 import { ORDER_DATA } from "../mocks/orderData.js";
 
@@ -8,6 +7,7 @@ let tables = {
   "MESA-18": {
     selections: {},
     users: {},
+    paid: {},
   },
 };
 
@@ -24,24 +24,16 @@ wss.on("connection", (ws) => {
         tableId = data.tableId;
 
         if (!tables[tableId]) {
-          tables[tableId] = { selections: {}, users: {} };
+          tables[tableId] = { selections: {}, users: {}, paid: {} };
         }
 
-        // Registrar usuario
         tables[tableId].users[sessionId] = {
           id: sessionId,
           name: `Usuario ${sessionId.slice(0, 4)}`,
           color: "#" + ((Math.random() * 0xffffff) << 0).toString(16),
         };
 
-        // Enviar estado inicial al usuario
-        ws.send(
-          JSON.stringify({
-            type: "UPDATE",
-            selections: tables[tableId].selections,
-            users: Object.values(tables[tableId].users),
-          })
-        );
+        broadcastTableUpdate(tableId);
         break;
 
       case "UPDATE_QTY":
@@ -51,11 +43,20 @@ wss.on("connection", (ws) => {
 
         const currentItemState = tables[tableId].selections[itemId] || {};
         const myQty = currentItemState[sessionId] || 0;
-        const othersQty =
-          Object.values(currentItemState).reduce((a, b) => a + b, 0) - myQty;
+
+        const currentPaid = tables[tableId].paid[itemId] || 0;
+        const totalSelected = Object.values(currentItemState).reduce(
+          (a, b) => a + b,
+          0
+        );
 
         const newQty = myQty + delta;
-        if (newQty < 0 || newQty + othersQty > itemConfig.qty) return;
+
+        if (
+          newQty < 0 ||
+          newQty + (totalSelected - myQty) + currentPaid > itemConfig.qty
+        )
+          return;
 
         if (newQty === 0) {
           delete currentItemState[sessionId];
@@ -69,19 +70,41 @@ wss.on("connection", (ws) => {
           };
         }
 
-        // Emitir a todos
-        wss.clients.forEach((client) => {
-          if (client.readyState === 1) {
-            client.send(
-              JSON.stringify({
-                type: "UPDATE",
-                selections: tables[tableId].selections,
-                users: Object.values(tables[tableId].users),
-              })
-            );
+        broadcastTableUpdate(tableId);
+        break;
+
+      case "CONFIRM_PAYMENT":
+        const table = tables[tableId];
+        if (!table) return;
+
+        Object.entries(table.selections).forEach(([id, usersMap]) => {
+          const userQty = usersMap[sessionId] || 0;
+          if (userQty > 0) {
+            table.paid[id] = (table.paid[id] || 0) + userQty;
+            delete usersMap[sessionId];
+          }
+          if (Object.keys(usersMap).length === 0) {
+            delete table.selections[id];
           }
         });
+
+        broadcastTableUpdate(tableId);
         break;
     }
   });
 });
+
+function broadcastTableUpdate(tableId) {
+  const message = JSON.stringify({
+    type: "UPDATE",
+    selections: tables[tableId].selections,
+    paid: tables[tableId].paid,
+    users: Object.values(tables[tableId].users),
+  });
+
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) {
+      client.send(message);
+    }
+  });
+}

@@ -29,10 +29,12 @@ function App() {
     items,
     tableInfo,
     selections,
+    paidItems,
     otherUsers,
     isConnected,
     totalToPay,
     updateItemQty,
+    confirmPayment,
   } = useBillSession(sessionId, tableId);
 
   const handlePaymentComplete = (amount) => {
@@ -45,7 +47,7 @@ function App() {
   }
 
   if (!isConnected) {
-    return <div className="loading">Conectando...</div>;
+    return <div className="loading">Conectando con la mesa...</div>;
   }
 
   if (isPaid) {
@@ -65,7 +67,7 @@ function App() {
             key={item.id}
             item={item}
             currentUserId={sessionId}
-            status={getItemStatus(item, selections, sessionId)}
+            status={getItemStatus(item, selections, paidItems, sessionId)}
             usersLookup={otherUsers}
             onUpdateQty={(delta) => updateItemQty(item.id, delta)}
           />
@@ -76,6 +78,7 @@ function App() {
         totalToPay={totalToPay}
         items={items}
         onPaymentSuccess={handlePaymentComplete}
+        confirmPayment={confirmPayment}
       />
     </main>
   );

@@ -3,7 +3,12 @@ import styles from "./OrderSummary.module.css";
 import { PaymentModal } from "./PaymentModal";
 import { ConfirmPaymentModal } from "./ConfirmPaymentModal";
 
-export function OrderSummary({ totalToPay, items, onPaymentSuccess }) {
+export function OrderSummary({
+  totalToPay,
+  items,
+  onPaymentSuccess,
+  confirmPayment,
+}) {
   const [mode, setMode] = useState(null);
   const [isModeModalOpen, setIsModeModalOpen] = useState(true);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -34,8 +39,13 @@ export function OrderSummary({ totalToPay, items, onPaymentSuccess }) {
 
     setPaymentStatus("processing");
 
+    // Simulación de pasarela de pago (2 segundos)
     setTimeout(() => {
       setPaymentStatus("success");
+
+      if (confirmPayment) {
+        confirmPayment();
+      }
 
       setTimeout(() => {
         setIsConfirmModalOpen(false);
