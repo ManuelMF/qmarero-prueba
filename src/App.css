@@ -6,45 +6,43 @@
     --color-border: #eee;
     --color-success: #4ECDC4;        
     --color-error: #FF6B6B;          
-    --font-family: system-ui, sans-serif;
+    --font-family: system-ui, -apple-system, sans-serif;
 }
 
 body {
     margin: 0;
-    background: #f8f9fa;
+    padding: 0;
+    background-color: var(--color-primary-light); 
     font-family: var(--font-family);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    display: flex;
-    justify-content: center; 
+    display: block; 
 }
-
 
 .layout {
     width: 100%;
-    max-width: 420px;        
     min-height: 100vh;
-    padding-bottom: 120px;
-    background: var(--color-primary-light);
+    padding-bottom: 160px; 
+    background-color: var(--color-primary-light);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    box-sizing: border-box;
 }
-
 
 .header {
     background: white;
-    padding: 20px;
+    padding: 24px 20px;
     border-bottom: 1px solid var(--color-border);
     position: sticky;
     top: 0;
     z-index: 10;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     text-align: center;
 }
 
-
 .header h1 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    font-weight: 800;
     color: var(--color-text-dark);
 }
 
@@ -58,15 +56,34 @@ body {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
+@media (min-width: 600px) {
+    body {
+        display: flex;
+        justify-content: center;
+        background-color: #e9ecef;
+        padding: 20px 0;
+    }
+    
+    .layout {
+        max-width: 450px;
+        margin: 0 auto;
+        min-height: calc(100vh - 40px);
+        border-radius: 30px; 
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+}
 
 .loading {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-color: var(--color-primary-light);
     color: var(--color-text-medium);
-    font-size: 1.1rem;
 }
