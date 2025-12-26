@@ -6,7 +6,8 @@ export function SuccessScreen({ amount }) {
       <div className={styles.icon}>✓</div>
       <h1>¡Pago Completado!</h1>
       <p>
-        Se han procesado correctamente <strong>{amount.toFixed(2)} €</strong>.
+        Se han procesado correctamente{" "}
+        <strong>{amount.toFixed(2)}&nbsp;€</strong>.
       </p>
       <p className={styles.subtext}>
         El restaurante ha recibido la confirmación. ¡Gracias por tu visita!
