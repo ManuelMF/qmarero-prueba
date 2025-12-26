@@ -16,8 +16,28 @@
   padding: 24px;
   text-align: center;
   animation: fadeIn 0.25s ease;
+  position: relative;
+}
+.closeButton {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #6b7280; 
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
 }
 
+.closeButton:hover {
+  color: #111827;
+}
 .title {
   font-size: 1.4rem;
   margin-bottom: 16px;

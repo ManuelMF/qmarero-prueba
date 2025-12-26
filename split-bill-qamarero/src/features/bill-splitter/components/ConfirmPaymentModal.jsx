@@ -7,26 +7,62 @@ export function ConfirmPaymentModal({
   description,
   amount,
   onConfirm,
+  status = "idle",
 }) {
   if (!isOpen) return null;
 
-  return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={onClose}>
+  const renderContent = () => {
+    if (status === "processing") {
+      return (
+        <div className={styles.statusContainer}>
+          <div className={styles.spinner}></div>
+          <p className={styles.statusText}>
+            Conectando con la pasarela de pago...
+          </p>
+        </div>
+      );
+    }
+
+    if (status === "success") {
+      return (
+        <div className={styles.statusContainer}>
+          <div className={styles.successIcon}>✓</div>
+          <p className={styles.statusText}>¡Pago realizado con éxito!</p>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <button
+          className={styles.closeButton}
+          onClick={onClose}
+          aria-label="Cerrar modal"
+        >
           ✕
         </button>
 
-        <h2>{title}</h2>
-        <p>{description}</p>
+        <h2 className={styles.title}>{title}</h2>
+        <p className={styles.description}>{description}</p>
 
-        <p>
-          <strong>{amount.toFixed(2)} €</strong>
-        </p>
+        <div className={styles.amountDisplay}>
+          <strong className={styles.amountValue}>{amount.toFixed(2)} €</strong>
+        </div>
 
         <button className={styles.primaryButton} onClick={onConfirm}>
-          Confirmar pago
+          Confirmar y pagar ahora
         </button>
+      </>
+    );
+  };
+
+  return (
+    <div
+      className={styles.overlay}
+      onClick={status === "idle" ? onClose : undefined}
+    >
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        {renderContent()}
       </div>
     </div>
   );

@@ -3,10 +3,12 @@ import styles from "./OrderSummary.module.css";
 import { PaymentModal } from "./PaymentModal";
 import { ConfirmPaymentModal } from "./ConfirmPaymentModal";
 
-export function OrderSummary({ totalToPay, items }) {
+export function OrderSummary({ totalToPay, items, onPaymentSuccess }) {
   const [mode, setMode] = useState(null);
   const [isModeModalOpen, setIsModeModalOpen] = useState(true);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const [paymentStatus, setPaymentStatus] = useState("idle");
 
   const grandTotal = useMemo(() => {
     return items.reduce((sum, item) => sum + item.unitPrice * item.qty, 0);
@@ -28,13 +30,22 @@ export function OrderSummary({ totalToPay, items }) {
   };
 
   const handleConfirmPayment = () => {
-    if (mode === "all") {
-      alert(`Pago TOTAL de ${grandTotal.toFixed(2)} € confirmado`);
-    } else {
-      alert(`Pago de MIS productos: ${totalToPay.toFixed(2)} € confirmado`);
-    }
+    const finalAmount = mode === "all" ? grandTotal : totalToPay;
 
-    setIsConfirmModalOpen(false);
+    setPaymentStatus("processing");
+
+    setTimeout(() => {
+      setPaymentStatus("success");
+
+      setTimeout(() => {
+        setIsConfirmModalOpen(false);
+        setPaymentStatus("idle");
+
+        if (onPaymentSuccess) {
+          onPaymentSuccess(finalAmount);
+        }
+      }, 1500);
+    }, 2000);
   };
 
   return (
@@ -47,7 +58,9 @@ export function OrderSummary({ totalToPay, items }) {
 
         <button
           className={styles.payButton}
-          disabled={totalToPay === 0 && mode === "select"}
+          disabled={
+            (totalToPay === 0 && mode === "select") || totalToPay === null
+          }
           onClick={openConfirmModal}
         >
           Pagar
@@ -63,7 +76,7 @@ export function OrderSummary({ totalToPay, items }) {
 
       <ConfirmPaymentModal
         isOpen={isConfirmModalOpen}
-        onClose={() => setIsConfirmModalOpen(false)}
+        onClose={() => paymentStatus === "idle" && setIsConfirmModalOpen(false)}
         title={
           mode === "all"
             ? "Confirmar pago de la cuenta"
@@ -76,6 +89,7 @@ export function OrderSummary({ totalToPay, items }) {
         }
         amount={mode === "all" ? grandTotal : totalToPay}
         onConfirm={handleConfirmPayment}
+        status={paymentStatus}
       />
     </>
   );

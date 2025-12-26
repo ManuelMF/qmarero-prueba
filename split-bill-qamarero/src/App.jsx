@@ -1,7 +1,8 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useBillSession } from "./features/bill-splitter/hooks/useBillSession";
 import { ProductCard } from "./features/bill-splitter/components/ProductCard";
 import { OrderSummary } from "./features/bill-splitter/components/OrderSummary";
+import { SuccessScreen } from "./features/bill-splitter/components/SuccessScreen";
 import { getItemStatus } from "./features/bill-splitter/utils/calculations";
 import { ORDER_DATA } from "./mocks/orderData.js";
 import "./App.css";
@@ -11,6 +12,9 @@ function App() {
     return localStorage.getItem("sessionId") || null;
   });
 
+  const [isPaid, setIsPaid] = useState(false);
+  const [paidAmount, setPaidAmount] = useState(0);
+
   useEffect(() => {
     if (!sessionId) {
       const newId = crypto.randomUUID();
@@ -18,8 +22,6 @@ function App() {
       localStorage.setItem("sessionId", newId);
     }
   }, [sessionId]);
-
-  if (!sessionId) return <div className="loading">Generando sesión...</div>;
 
   const tableId = ORDER_DATA.table.id;
 
@@ -33,11 +35,22 @@ function App() {
     updateItemQty,
   } = useBillSession(sessionId, tableId);
 
-  const handleConfirmPayment = () => {
-    alert(`¡Se ha confirmado el pago de ${totalToPay.toFixed(2)} €!`);
+  const handlePaymentComplete = (amount) => {
+    setPaidAmount(amount);
+    setIsPaid(true);
   };
 
-  if (!isConnected) return <div className="loading">Conectando...</div>;
+  if (!sessionId) {
+    return <div className="loading">Generando sesión...</div>;
+  }
+
+  if (!isConnected) {
+    return <div className="loading">Conectando...</div>;
+  }
+
+  if (isPaid) {
+    return <SuccessScreen amount={paidAmount} />;
+  }
 
   return (
     <main className="layout">
@@ -62,7 +75,7 @@ function App() {
       <OrderSummary
         totalToPay={totalToPay}
         items={items}
-        onConfirmPayment={handleConfirmPayment}
+        onPaymentSuccess={handlePaymentComplete}
       />
     </main>
   );

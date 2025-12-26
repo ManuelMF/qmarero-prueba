@@ -6,7 +6,7 @@ export function PaymentModal({ isOpen, onClose, onSelectItems, onPayAll }) {
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <h2 className={styles.title}>¿Cómo quieres participar?</h2>
+        <h2 className={styles.title}>¿Cómo quieres realizar el pago?</h2>
 
         <p className={styles.subtitle}>
           Elige cómo quieres gestionar esta cuenta
@@ -21,10 +21,6 @@ export function PaymentModal({ isOpen, onClose, onSelectItems, onPayAll }) {
             Hacerme cargo de toda la cuenta
           </button>
         </div>
-
-        <button className={styles.laterButton} onClick={onClose}>
-          Decidir más tarde
-        </button>
       </div>
     </div>
   );
