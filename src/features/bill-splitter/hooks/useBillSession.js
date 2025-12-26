@@ -28,8 +28,8 @@ export function useBillSession(sessionId, tableId) {
     SocketService.updateQuantity(itemId, sessionId, delta);
   };
 
-  const confirmPayment = () => {
-    SocketService.confirmPayment(sessionId, tableId);
+  const confirmPayment = (mode) => {
+    SocketService.confirmPayment(sessionId, tableId, mode);
   };
 
   const totalToPay = useMemo(

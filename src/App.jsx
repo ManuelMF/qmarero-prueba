@@ -77,6 +77,7 @@ function App() {
       <OrderSummary
         totalToPay={totalToPay}
         items={items}
+        paidItems={paidItems}
         onPaymentSuccess={handlePaymentComplete}
         confirmPayment={confirmPayment}
       />

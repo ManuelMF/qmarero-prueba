@@ -53,9 +53,11 @@ export const SocketService = {
     }
   },
 
-  confirmPayment: (sessionId, tableId) => {
+  confirmPayment: (sessionId, tableId, mode) => {
     if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ type: "CONFIRM_PAYMENT", sessionId, tableId }));
+      ws.send(
+        JSON.stringify({ type: "CONFIRM_PAYMENT", sessionId, tableId, mode })
+      );
     } else {
       console.error("No se pudo confirmar pago: Conexión perdida");
     }

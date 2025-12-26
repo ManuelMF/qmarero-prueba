@@ -1,26 +1,35 @@
 /**
  * Calcula el total que debe pagar un usuario específico.
- * El usuario paga el precio unitario por cada unidad.
  */
-export const calculateUserTotal = (items, selections, userId) => {
+export const calculateUserTotal = (items = [], selections = {}, userId) => {
+  if (!items) return 0;
   return items.reduce((total, item) => {
+    if (!item) return total;
     const itemSelections = selections[item.id] || {};
     const myQty = itemSelections[userId] || 0;
-
-    if (myQty === 0) return total;
 
     return total + myQty * item.unitPrice;
   }, 0);
 };
 
 /**
- * Determina el estado de un producto incluyendo lo que ya se ha pagado.
- * @param {Object} item - Datos del producto del mock.
- * @param {Object} selections - Estado de selecciones en tiempo real (Socket).
- * @param {Object} paidItems - Estado de productos ya pagados (Socket).
- * @param {string} userId - ID del usuario actual.
+ * Determina el estado de un producto.
  */
-export const getItemStatus = (item, selections, paidItems = {}, userId) => {
+export const getItemStatus = (
+  item,
+  selections = {},
+  paidItems = {},
+  userId
+) => {
+  if (!item)
+    return {
+      myQty: 0,
+      paidQty: 0,
+      totalTaken: 0,
+      isFull: false,
+      participants: [],
+    };
+
   const itemState = selections[item.id] || {};
   const paidQty = paidItems[item.id] || 0;
 
@@ -34,4 +43,18 @@ export const getItemStatus = (item, selections, paidItems = {}, userId) => {
     isFull: totalOccupied >= item.qty,
     participants: Object.keys(itemState),
   };
+};
+
+export const calculateRemainingTotal = (items = [], paidItems = {}) => {
+  if (!items || !Array.isArray(items)) return 0;
+
+  return items.reduce((total, item) => {
+    if (!item) return total;
+
+    const paidQty = paidItems[item.id] || 0;
+    const remainingQty = Math.max(0, (item.qty || 0) - paidQty);
+    const price = item.unitPrice || 0;
+
+    return total + remainingQty * price;
+  }, 0);
 };

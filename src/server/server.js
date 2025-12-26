@@ -36,14 +36,13 @@ wss.on("connection", (ws) => {
         broadcastTableUpdate(tableId);
         break;
 
-      case "UPDATE_QTY":
+      case "UPDATE_QTY": {
         const { itemId, delta } = data;
         const itemConfig = ORDER_DATA.items.find((i) => i.id === itemId);
         if (!itemConfig) return;
 
         const currentItemState = tables[tableId].selections[itemId] || {};
         const myQty = currentItemState[sessionId] || 0;
-
         const currentPaid = tables[tableId].paid[itemId] || 0;
         const totalSelected = Object.values(currentItemState).reduce(
           (a, b) => a + b,
@@ -72,29 +71,40 @@ wss.on("connection", (ws) => {
 
         broadcastTableUpdate(tableId);
         break;
+      }
 
-      case "CONFIRM_PAYMENT":
+      case "CONFIRM_PAYMENT": {
+        const { mode } = data;
         const table = tables[tableId];
         if (!table) return;
 
-        Object.entries(table.selections).forEach(([id, usersMap]) => {
-          const userQty = usersMap[sessionId] || 0;
-          if (userQty > 0) {
-            table.paid[id] = (table.paid[id] || 0) + userQty;
-            delete usersMap[sessionId];
-          }
-          if (Object.keys(usersMap).length === 0) {
-            delete table.selections[id];
-          }
-        });
+        if (mode === "all") {
+          ORDER_DATA.items.forEach((item) => {
+            table.paid[item.id] = item.qty;
+            delete table.selections[item.id];
+          });
+        } else {
+          Object.entries(table.selections).forEach(([itemId, usersMap]) => {
+            const userQty = usersMap[sessionId] || 0;
+            if (userQty > 0) {
+              table.paid[itemId] = (table.paid[itemId] || 0) + userQty;
+              delete usersMap[sessionId];
+            }
+            if (Object.keys(usersMap).length === 0)
+              delete table.selections[itemId];
+          });
+        }
 
         broadcastTableUpdate(tableId);
         break;
+      }
     }
   });
 });
 
 function broadcastTableUpdate(tableId) {
+  if (!tables[tableId]) return;
+
   const message = JSON.stringify({
     type: "UPDATE",
     selections: tables[tableId].selections,
